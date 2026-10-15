@@ -1,0 +1,37 @@
+name: Sync Bloct
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-bloct.yml'
+      - 'scripts/sync-bloct.py'
+      - 'scripts/test_sync_bloct.py'
+
+concurrency:
+  group: sync-bloct
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Test release sync safeguards
+        run: python3 -B -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Verify latest public release and update cask
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/sync-bloct.py
+      - name: Commit and push cask
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add Casks/bloct.rb
+          git diff --cached --quiet || git commit -m 'Sync Bloct with latest stable release'
+          git push origin HEAD:main
