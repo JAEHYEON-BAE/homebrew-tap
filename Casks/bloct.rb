@@ -1,6 +1,6 @@
 cask "bloct" do
-  version "1.8.0"
-  sha256 "74f3da325fb8ae71979d51a0172d981900eabd443f4b0efefa94a1878e67cc70"
+  version "2.0.0"
+  sha256 "dd2d1fb194fb13a5aa545fffbb8690e45e68c2ed1094c8060c42b07938df0e04"
 
   url "https://github.com/JAEHYEON-BAE/bloct/releases/download/v#{version}/Bloct.zip"
   name "Bloct"
